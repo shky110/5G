@@ -5,8 +5,12 @@ include("../config/db.php");
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $amount = $_POST['amount'];
     $transaction_id = $_POST['transaction_id'];
+    $wallet_address = $_POST['wallet_address'];
 
-    $query = "INSERT INTO deposits (user, amount, transaction_id, status) VALUES ('$_SESSION[user]', '$amount', '$transaction_id', 'pending')";
+    // Save deposit request with status "pending"
+    $query = "INSERT INTO deposits (user, amount, transaction_id, wallet_address, status) 
+              VALUES ('$_SESSION[user]', '$amount', '$transaction_id', '$wallet_address', 'pending')";
+    
     if (mysqli_query($conn, $query)) {
         echo "Deposit request submitted. Wait for admin approval.";
     } else {
@@ -14,8 +18,18 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     }
 }
 ?>
+
+<h2>Deposit USDT (TRC20)</h2>
 <form method="post">
-    <input type="number" name="amount" placeholder="Amount in USD" required>
-    <input type="text" name="transaction_id" placeholder="Binance Transaction ID" required>
-    <button type="submit">Submit</button>
+    <label>Amount (USD):</label>
+    <input type="number" name="amount" placeholder="Enter amount in USD" required>
+    
+    <label>Transaction ID (TXID):</label>
+    <input type="text" name="transaction_id" placeholder="Paste Binance Transaction ID" required>
+    
+    <label>Wallet Address:</label>
+    <input type="text" name="USDT TRC-20" value="YOUR_USDT_TRC20_ADDRESS" readonly>
+
+    <button type="submit">Submit Deposit</button>
 </form>
+
